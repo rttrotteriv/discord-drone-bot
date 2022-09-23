@@ -23,15 +23,12 @@ public class Main extends ListenerAdapter {
                 .build();
 
         jda.awaitReady();
-        // jda.getPresence().setActivity(Activity.playing("now from Java!"));
-        jda.getPresence().setActivity(Activity.playing("with beta code. Might be wonky for a bit, hang tight."));
+        jda.getPresence().setActivity(Activity.playing("now from Java!"));
 
         // Start of command initialization logic
         if (java.util.Arrays.asList(args).contains("-initialize"))  // TODO implement initialization logic
         {
-            // CommandListUpdateAction commands = jda.updateCommands();
-            CommandListUpdateAction commands = jda.getGuildById("927561153213767760").updateCommands();
-            // Use first for global commands, second only for 'The Testing Grounds'.
+            CommandListUpdateAction commands = jda.updateCommands();
 
             //noinspection ResultOfMethodCallIgnored
             commands.addCommands(

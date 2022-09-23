@@ -1,23 +1,12 @@
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
-
-import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
 
 public class DroneBot extends ListenerAdapter
@@ -109,11 +98,6 @@ public class DroneBot extends ListenerAdapter
         }
 
         event.getChannel().sendMessage(event.getUser().getAsMention() + ", boop!").queue();
-    }
-
-    public void filedrop(SlashCommandInteractionEvent event)
-    {
-        // TODO: file dropper?
     }
 }
 
