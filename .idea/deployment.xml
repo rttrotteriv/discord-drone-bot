@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="Horizon" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;*.iml" remoteFilesAllowedToDisappearOnAutoupload="false" autoUploadExternalChanges="true">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="Horizon" exclude=".svn;.cvs;.idea;.DS_Store;.git;.hg;*.hprof;*.pyc;*.iml" remoteFilesAllowedToDisappearOnAutoupload="false" confirmBeforeUploading="false" autoUploadExternalChanges="true">
+    <option name="confirmBeforeUploading" value="false" />
     <serverData>
       <paths name="Horizon">
         <serverdata>
           <mappings>
-            <mapping deploy="/bin/autodeployed/discordbot" local="$PROJECT_DIR$/out/production/java_discord_bot" web="/" />
+            <mapping deploy="/bin/autodeployed/discordbot" local="$PROJECT_DIR$/deploymentjars" web="/" />
           </mappings>
         </serverdata>
       </paths>
