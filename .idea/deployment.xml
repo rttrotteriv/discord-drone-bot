@@ -7,6 +7,7 @@
         <serverdata>
           <mappings>
             <mapping deploy="/bin/autodeployed/discordbot" local="$PROJECT_DIR$/deploymentjars" web="/" />
+            <mapping deploy="/dev/null" local="$PROJECT_DIR$/examplestandalone" web="/" />
           </mappings>
         </serverdata>
       </paths>
