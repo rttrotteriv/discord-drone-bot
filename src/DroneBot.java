@@ -9,11 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 
-public class DroneBot extends ListenerAdapter
-{
+public class DroneBot extends ListenerAdapter {
+
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event)
-    {
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         // Only accept commands from guilds
         if (event.getGuild() == null)
             return;
