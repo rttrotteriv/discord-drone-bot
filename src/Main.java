@@ -14,7 +14,7 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException, InterruptedException {
         JDA jda = JDABuilder.createLight("OTIxOTM1NzU5NjA1MzY2ODI0.Yb6JlQ.WikNE78fB16-bTK2bCHkMkMkEdk",
                         EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT))
-                .addEventListeners(new DroneBot())
+                .addEventListeners(new DroneBotEventListener())
                 .build(); // start connecting and logging in
 
         jda.awaitReady();
