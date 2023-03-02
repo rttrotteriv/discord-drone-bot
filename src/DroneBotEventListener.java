@@ -1,5 +1,6 @@
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -59,9 +60,31 @@ public class DroneBotEventListener extends ListenerAdapter {
     }
 
     @Override
+    public void onUserContextInteraction(@NotNull UserContextInteractionEvent event) {
+        switch (event.getName()) {
+            case "debug" -> stopResponding(event);
+        }
+    }
+
+    @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         if (event.getMessage().getMentions().isMentioned(event.getJDA().getSelfUser())) {
             event.getMessage().getChannel().sendMessage("Hai c:").queue();
+        }
+    }
+
+    private void stopResponding(UserContextInteractionEvent event) {
+        if (event.getGuild() == null && event.getUser().getId().equals("685525568581926933")) {
+            int sleepTime = event.getOption("time", 3600, OptionMapping::getAsInt);
+            event.reply("This instance not responding for " + sleepTime + " seconds.").queue();
+            System.gc();
+            try {
+                Thread.sleep(sleepTime);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e); // just crash if it's interrupted
+            }
+        } else {
+            event.reply("You're not allowed to do that.").queue();
         }
     }
 
