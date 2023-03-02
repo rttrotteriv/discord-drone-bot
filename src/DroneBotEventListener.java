@@ -1,10 +1,21 @@
-import net.dv8tion.jda.api.entities.MessageChannel;
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.channel.Channel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
@@ -22,7 +33,8 @@ public class DroneBot extends ListenerAdapter {
                 say(event, event.getOption("content").getAsString());
             case "prune" -> prune(event);
             case "boop" -> boop(event);
-            default ->
+            case "play" -> startPlaying(event);
+            default -> {
                 // the registered command isn't handled in code
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
         }
@@ -97,6 +109,49 @@ public class DroneBot extends ListenerAdapter {
         }
 
         event.getChannel().sendMessage(event.getUser().getAsMention() + ", boop!").queue();
+    }
+
+    public void startPlaying(SlashCommandInteractionEvent event) {
+        //event.reply("Now playing...").queue();
+
+        //if guild NOT IN guilds_that_have_player
+
+        // we checked for getGuild being null earlier
+        @SuppressWarnings("DataFlowIssue") AudioManager guildAudioManager = event.getGuild().getAudioManager();
+        guildAudioManager.openAudioConnection(event.getGuild().getVoiceChannelById("927561153213767765"));
+
+        AudioPlayer guildPlayer = playerManager.createPlayer();
+        AudioPlayerSendHandler guildAudioPlayerSendHandler = new AudioPlayerSendHandler(guildPlayer);
+
+        guildAudioManager.setSendingHandler(guildAudioPlayerSendHandler);
+
+        TrackScheduler trackScheduler = new TrackScheduler();
+        guildPlayer.addListener(trackScheduler);
+        playerManager.loadItem(event.getOption("id", OptionMapping::getAsString), new AudioLoadResultHandler() {
+            // This is an anonymous class.
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                guildPlayer.playTrack(track);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                for (AudioTrack track : playlist.getTracks()) {
+                    guildPlayer.playTrack(track);
+                }
+            }
+
+            @Override
+            public void noMatches() {
+                // Notify the user that we've got nothing
+            }
+
+            @Override
+            public void loadFailed(FriendlyException throwable) {
+                System.out.println("Error in loading: " + throwable.getMessage());
+            }
+        });
+
     }
 }
 
