@@ -12,7 +12,7 @@ import java.util.EnumSet;
  */
 public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException, InterruptedException {
-        JDA jda = JDABuilder.createLight("OTIxOTM1NzU5NjA1MzY2ODI0.Yb6JlQ.WikNE78fB16-bTK2bCHkMkMkEdk",
+        JDA jda = JDABuilder.createLight("OTIxOTM1NzU5NjA1MzY2ODI0.Yb6JlQ.WikNE78fB16-bTK2bCHkMkMkEdk", // TODO configuration file instead of hardcoded token
                         EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT))
                 .addEventListeners(new DroneBotEventListener())
                 .build(); // start connecting and logging in
