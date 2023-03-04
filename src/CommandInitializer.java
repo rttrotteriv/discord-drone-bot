@@ -21,9 +21,6 @@ public class CommandInitializer {
                                 .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_MANAGE))
 
                 ).addCommands(
-                        Commands.user("debug")
-
-                ).addCommands(
                         Commands.slash("boop", "Receive a boop")
                                 .addOption(BOOLEAN, "furry", "If paw-boops are your thing.")
                 )
