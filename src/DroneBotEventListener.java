@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -27,7 +28,7 @@ public class DroneBotEventListener extends ListenerAdapter {
 
     AudioPlayerManager playerManager;
 
-    Map<String, AudioPlayer> guildPlayers;
+    Map<String, AudioPlayer> guildPlayers = new HashMap<>();
 
     DroneBotEventListener() {
         playerManager = new DefaultAudioPlayerManager();
@@ -127,7 +128,7 @@ public class DroneBotEventListener extends ListenerAdapter {
     private void startPlaying(SlashCommandInteractionEvent event) {
         if (event.getGuild() == null) event.reply("You can only do this in a server.").queue();
 
-        event.deferReply(true).queue();
+        //event.deferReply(true).queue();
         String guildId = event.getGuild().getId();
 
         if (!guildPlayers.containsKey(guildId)) {
