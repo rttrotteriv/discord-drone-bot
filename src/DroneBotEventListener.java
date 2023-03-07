@@ -23,6 +23,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DroneBotEventListener extends ListenerAdapter {
 
+    AudioPlayerManager playerManager;
+
+    DroneBotEventListener() {
+        playerManager = new DefaultAudioPlayerManager();
+        AudioSourceManagers.registerRemoteSources(playerManager);
+    }
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         System.out.println("Command received");
@@ -130,10 +137,12 @@ public class DroneBotEventListener extends ListenerAdapter {
 
         TrackScheduler trackScheduler = new TrackScheduler();
         guildPlayer.addListener(trackScheduler);
+
         playerManager.loadItem(event.getOption("id", OptionMapping::getAsString), new AudioLoadResultHandler() {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
+                System.out.println("Playing...");
                 guildPlayer.playTrack(track);
             }
 
@@ -146,7 +155,7 @@ public class DroneBotEventListener extends ListenerAdapter {
 
             @Override
             public void noMatches() {
-                // Notify the user that we've got nothing
+                System.out.println("No matches.");
             }
 
             @Override
@@ -154,7 +163,6 @@ public class DroneBotEventListener extends ListenerAdapter {
                 System.out.println("Error in loading: " + throwable.getMessage());
             }
         });
-
     }
 }
 

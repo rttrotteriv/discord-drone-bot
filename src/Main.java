@@ -17,7 +17,7 @@ public class Main extends ListenerAdapter {
 
         try {
             jda = JDABuilder.create("OTIxOTM1NzU5NjA1MzY2ODI0.Yb6JlQ.WikNE78fB16-bTK2bCHkMkMkEdk", // TODO configuration file instead of hardcoded token
-                            EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT))
+                            EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_VOICE_STATES))
                     .addEventListeners(new DroneBotEventListener())
                     .build();
         } catch (ErrorResponseException | LoginException exception) {
