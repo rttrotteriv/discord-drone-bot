@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.Permission;
 
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
+/**
+ * Class with one method to initialize slash commands for a given JDA.
+ */
 public class CommandInitializer {
     public static void initializeSlashCommands(JDA jda) {
         CommandListUpdateAction commands = jda.updateCommands();

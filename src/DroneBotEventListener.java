@@ -30,7 +30,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             default -> {
                 // the registered command isn't handled in code
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
-                System.out.println("Command didn't work");
+                System.err.println("Command didn't work");
             }
         }
     }
@@ -64,7 +64,7 @@ public class DroneBotEventListener extends ListenerAdapter {
         switch (event.getName()) {
             default -> {
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
-                System.out.println("Command didn't work");
+                System.err.println("Command didn't work");
             }
         }
     }
