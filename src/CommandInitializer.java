@@ -29,6 +29,10 @@ public class CommandInitializer {
                                 .setGuildOnly(true)
 
                 ).addCommands(
+                        Commands.slash("leave", "Removes the bot from the voice channel")
+                                .setGuildOnly(true)
+
+                ).addCommands(
                         Commands.slash("boop", "Receive a boop")
                                 .addOption(BOOLEAN, "furry", "If paw-boops are your thing.")
                 )

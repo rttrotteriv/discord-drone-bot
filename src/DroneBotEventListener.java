@@ -46,6 +46,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             case "prune" -> prune(event);
             case "boop" -> boop(event);
             case "play" -> startPlaying(event);
+            case "leave" -> leaveVoice(event);
             default -> {
                 // the registered command isn't handled in code
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
@@ -170,6 +171,15 @@ public class DroneBotEventListener extends ListenerAdapter {
             }
         });
 
+    }
+
+    private void leaveVoice(SlashCommandInteractionEvent event) {
+        if (event.getGuild() == null) event.reply("You can only do this in a server.").queue();
+
+        //noinspection DataFlowIssue  CacheFlag.VOICE_STATE should be enabled.
+        if (event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
+            event.getGuild().getAudioManager().closeAudioConnection();
+        }
     }
 }
 
