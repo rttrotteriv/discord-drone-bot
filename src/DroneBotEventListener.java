@@ -17,6 +17,8 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 
 /**
  * Class that listens to and responds to slash commands and buttons.
@@ -24,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 public class DroneBotEventListener extends ListenerAdapter {
 
     AudioPlayerManager playerManager;
+
+    Map<String, AudioPlayer> guildPlayers;
 
     DroneBotEventListener() {
         playerManager = new DefaultAudioPlayerManager();
@@ -122,40 +126,42 @@ public class DroneBotEventListener extends ListenerAdapter {
     }
 
     public void startPlaying(SlashCommandInteractionEvent event) {
-        //event.reply("Now playing...").queue();
+        event.deferReply(true).queue();
+        String guildId = event.getGuild().getId();
 
-        //if guild NOT IN guilds_that_have_player
+        if (!guildPlayers.containsKey(guildId)) {
 
-        // we checked for getGuild being null earlier
-        @SuppressWarnings("DataFlowIssue") AudioManager guildAudioManager = event.getGuild().getAudioManager();
-        guildAudioManager.openAudioConnection(event.getGuild().getVoiceChannelById("927561153213767765"));
+            AudioManager guildAudioManager = event.getGuild().getAudioManager();
+            guildAudioManager.openAudioConnection(event.getGuild().getVoiceChannelById("927561153213767765")); // TODO what channel?
 
-        AudioPlayer guildPlayer = playerManager.createPlayer();
-        AudioPlayerSendHandler guildAudioPlayerSendHandler = new AudioPlayerSendHandler(guildPlayer);
+            guildPlayers.put(guildId, playerManager.createPlayer());
 
-        guildAudioManager.setSendingHandler(guildAudioPlayerSendHandler);
+            AudioPlayerSendHandler guildAudioPlayerSendHandler = new AudioPlayerSendHandler(guildPlayers.get(guildId));
+            // we don't need to keep track of this object
+            guildAudioManager.setSendingHandler(guildAudioPlayerSendHandler);
 
-        TrackScheduler trackScheduler = new TrackScheduler();
-        guildPlayer.addListener(trackScheduler);
+            TrackScheduler trackScheduler = new TrackScheduler();
+            guildPlayers.get(guildId).addListener(trackScheduler);
+        }
 
         playerManager.loadItem(event.getOption("id", OptionMapping::getAsString), new AudioLoadResultHandler() {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
-                System.out.println("Playing...");
-                guildPlayer.playTrack(track);
+                event.reply("Playing " + track.getInfo() + "...").queue();
+                guildPlayers.get(guildId).playTrack(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 for (AudioTrack track : playlist.getTracks()) {
-                    guildPlayer.playTrack(track);
+                    guildPlayers.get(guildId).playTrack(track);
                 }
             }
 
             @Override
             public void noMatches() {
-                System.out.println("No matches.");
+                event.reply("No video was found with id " + event.getOption("id", OptionMapping::getAsString)).queue();
             }
 
             @Override
@@ -163,6 +169,7 @@ public class DroneBotEventListener extends ListenerAdapter {
                 System.out.println("Error in loading: " + throwable.getMessage());
             }
         });
+
     }
 }
 
