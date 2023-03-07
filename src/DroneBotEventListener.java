@@ -37,9 +37,7 @@ public class DroneBotEventListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         System.out.println("Command received");
-        // Only accept commands from guilds
-        if (event.getGuild() == null)
-            return;
+
         switch (event.getName()) {
             case "say" ->
                 // content is required so no null-check here
@@ -97,11 +95,11 @@ public class DroneBotEventListener extends ListenerAdapter {
         }
     }
 
-    public void say(SlashCommandInteractionEvent event, String content) {
+    private void say(SlashCommandInteractionEvent event, String content) {
         event.reply(content).queue(); // This requires no permissions as it's a reply
     }
 
-    public void prune(SlashCommandInteractionEvent event) {
+    private void prune(SlashCommandInteractionEvent event) {
         OptionMapping amountOption = event.getOption("amount");  // This is configured to be optional so check for null
         int amount = amountOption == null
                 ? 100 // default 100
@@ -115,7 +113,7 @@ public class DroneBotEventListener extends ListenerAdapter {
                 .queue();
     }
 
-    public void boop(SlashCommandInteractionEvent event) {
+    private void boop(SlashCommandInteractionEvent event) {
         if (event.getOption("furry", false, OptionMapping::getAsBoolean)) {
             event.reply("You receive a light tap on the nose. The fuzzy paw makes it even better.").setEphemeral(true).queue();
         } else {
@@ -125,7 +123,9 @@ public class DroneBotEventListener extends ListenerAdapter {
         event.getChannel().sendMessage(event.getUser().getAsMention() + ", boop!").queue();
     }
 
-    public void startPlaying(SlashCommandInteractionEvent event) {
+    private void startPlaying(SlashCommandInteractionEvent event) {
+        if (event.getGuild() == null) event.reply("You can only do this in a server.").queue();
+
         event.deferReply(true).queue();
         String guildId = event.getGuild().getId();
 
