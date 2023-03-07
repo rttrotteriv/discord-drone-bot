@@ -4,6 +4,9 @@ import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Buffers and processes audio data for Discord.
+ */
 public class AudioPlayerSendHandler implements AudioSendHandler {
     private final AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
