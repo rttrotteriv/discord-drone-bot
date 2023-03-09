@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -25,7 +24,9 @@ public class DroneBotEventListener extends ListenerAdapter {
                 // content is required so no null-check here
                 //noinspection DataFlowIssue
                     say(event, event.getOption("content").getAsString());
+            /*
             case "prune" -> prune(event);
+            */
             case "boop" -> boop(event);
             default -> {
                 // the registered command isn't handled in code
@@ -84,6 +85,7 @@ public class DroneBotEventListener extends ListenerAdapter {
         }
     }
 
+    /*
     public void prune(SlashCommandInteractionEvent event) {
         OptionMapping amountOption = event.getOption("amount");  // This is configured to be optional so check for null
         int amount = amountOption == null
@@ -97,6 +99,7 @@ public class DroneBotEventListener extends ListenerAdapter {
                         Button.danger(userId + ":prune:" + amount, "Yes!"))  // the first parameter is the component id we use in onButtonInteraction above
                 .queue();
     }
+    */
 
     public void boop(SlashCommandInteractionEvent event) {
         if (event.getOption("furry", false, OptionMapping::getAsBoolean)) {
