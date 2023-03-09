@@ -24,12 +24,12 @@ public class CommandInitializer {
                                 .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_MANAGE))
 
                 ).addCommands(
-                        Commands.slash("play", "Play a youtube video's audio")
-                                .addOption(STRING, "id", "Video ID", true)
+                        Commands.slash("play", "Queue a youtube video or playlist audio")
+                                .addOption(STRING, "url", "Video or playlist URL", true)
                                 .setGuildOnly(true)
 
                 ).addCommands(
-                        Commands.slash("skip", "Play a youtube video's audio")
+                        Commands.slash("skip", "Skip to next song in queue")
                                 .setGuildOnly(true)
 
                 ).addCommands(
