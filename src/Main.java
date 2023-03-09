@@ -29,7 +29,7 @@ public class Main extends ListenerAdapter {
             System.err.println("awaitReady was interrupted, JDA caches may be incomplete!");
         }
 
-        jda.getPresence().setActivity(Activity.playing("now from Java!"));
+        jda.getPresence().setActivity(Activity.playing("it works!"));
 
         // Initialize commands if told to
         if (java.util.Arrays.asList(args).contains("-initialize")) CommandInitializer.initializeSlashCommands(jda);

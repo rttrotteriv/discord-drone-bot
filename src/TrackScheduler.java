@@ -12,6 +12,8 @@ public class TrackScheduler extends AudioEventAdapter {
 
     ArrayList<AudioTrack> queue = new ArrayList<>();
 
+    boolean notPlaying = true;
+
     /**
      * @param player    Audio player
      * @param track     Audio track that ended
@@ -19,22 +21,25 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (!queue.isEmpty()) {
+        if (!queue.isEmpty() && !endReason.equals(AudioTrackEndReason.REPLACED)) {
             player.playTrack(queue.remove(0));
+        } else {
+            notPlaying = true;
         }
     }
 
 
     public void queue(AudioPlayer player, AudioTrack track) {
-        if (queue.isEmpty()) {
+        if (queue.isEmpty() && notPlaying) {
             player.playTrack(track);
+            notPlaying = false;
         } else {
             queue.add(track);
         }
     }
 
     public void clearQueue() {
-
+        queue.clear();
     }
 
     /**

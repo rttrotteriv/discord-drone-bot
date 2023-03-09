@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class DroneBotEventListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        System.out.println("Command received");
+        System.out.println("Command received: " + event.getName());
 
         switch (event.getName()) {
             case "say" ->
@@ -145,7 +144,7 @@ public class DroneBotEventListener extends ListenerAdapter {
         //event.deferReply(true).queue();
         String guildId = event.getGuild().getId();
 
-        if (!guildPlayers.containsKey(guildId)) {
+        if (!guildPlayers.containsKey(guildId) || !guildQueues.containsKey(guildId)) {
 
             AudioManager guildAudioManager = event.getGuild().getAudioManager();
             guildAudioManager.openAudioConnection(event.getMember().getVoiceState().getChannel());
@@ -164,22 +163,21 @@ public class DroneBotEventListener extends ListenerAdapter {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
-                System.out.println("Playing " + track.getInfo() + "...");
+                event.reply("Playing " + track.getInfo().title + "...").queue();
                 guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
-                guildPlayers.get(guildId).playTrack(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+                event.reply("Queuing " + playlist.getName() + "...").queue();
                 for (AudioTrack track : playlist.getTracks()) {
-                    System.out.println("Queuing track...");
                     guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
                 }
             }
 
             @Override
             public void noMatches() {
-                event.reply("No video was found with id " + event.getOption("id", OptionMapping::getAsString)).queue();
+                event.reply("No video was found.").queue();
             }
 
             @Override
@@ -196,8 +194,10 @@ public class DroneBotEventListener extends ListenerAdapter {
             return;
         }
 
-        if (!guildPlayers.containsKey(event.getGuild().getId())) {
-            guildQueues.get(event.getGuild().getId()).skip(guildPlayers.get(event.getGuild().getId()));
+        if (guildPlayers.containsKey(event.getGuild().getId()) && guildQueues.get(event.getGuild().getId()).skip(guildPlayers.get(event.getGuild().getId()))) {
+            event.reply("Skipped.").queue();
+        } else {
+            event.reply("No songs queued.").queue();
         }
     }
 
@@ -208,7 +208,7 @@ public class DroneBotEventListener extends ListenerAdapter {
         if (event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
             event.getGuild().getAudioManager().closeAudioConnection();
             event.reply("Left voice channel.").queue();
-            guildQueues.remove(event.getGuild().getId());
+            guildQueues.get(event.getGuild().getId()).clearQueue();
         }
     }
 }
