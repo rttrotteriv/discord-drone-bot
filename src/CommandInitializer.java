@@ -24,6 +24,19 @@ public class CommandInitializer {
                 */
 
                 ).addCommands(
+                        Commands.slash("play", "Queue a youtube video or playlist audio")
+                                .addOption(STRING, "url", "Video or playlist URL", true)
+                                .setGuildOnly(true)
+
+                ).addCommands(
+                        Commands.slash("skip", "Skip to next song in queue")
+                                .setGuildOnly(true)
+
+                ).addCommands(
+                        Commands.slash("leave", "Removes the bot from the voice channel")
+                                .setGuildOnly(true)
+
+                ).addCommands(
                         Commands.slash("boop", "Receive a boop")
                                 .addOption(BOOLEAN, "furry", "If paw-boops are your thing.")
                 )
