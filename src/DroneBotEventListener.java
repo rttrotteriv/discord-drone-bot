@@ -77,7 +77,11 @@ public class DroneBotEventListener extends ListenerAdapter {
     }
 
     public void say(SlashCommandInteractionEvent event, String content) {
-        event.reply(content).queue(); // This requires no permissions as it's a reply
+        if (event.getUser().getId().equals("")) {
+            event.reply(content).queue();
+        } else {
+            event.reply("Only Cheesetron's allowed to do that \uD83D\uDE1C").setEphemeral(true).queue();
+        }
     }
 
     public void prune(SlashCommandInteractionEvent event) {
