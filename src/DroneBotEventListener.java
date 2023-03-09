@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -167,7 +166,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             guildPlayers.get(guildId).addListener(guildQueues.get(guildId));
         }
 
-        playerManager.loadItem(event.getOption("id", OptionMapping::getAsString), new AudioLoadResultHandler() {
+        playerManager.loadItem(event.getOption("url", OptionMapping::getAsString), new AudioLoadResultHandler() {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
