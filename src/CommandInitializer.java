@@ -29,6 +29,10 @@ public class CommandInitializer {
                                 .setGuildOnly(true)
 
                 ).addCommands(
+                        Commands.slash("skip", "Play a youtube video's audio")
+                                .setGuildOnly(true)
+
+                ).addCommands(
                         Commands.slash("leave", "Removes the bot from the voice channel")
                                 .setGuildOnly(true)
 

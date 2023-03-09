@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,9 @@ public class DroneBotEventListener extends ListenerAdapter {
     AudioPlayerManager playerManager;
 
     Map<String, AudioPlayer> guildPlayers = new HashMap<>();
+
+    Map<String, TrackScheduler> guildQueues = new HashMap<>();
+
 
     DroneBotEventListener() {
         playerManager = new DefaultAudioPlayerManager();
@@ -47,6 +51,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             case "prune" -> prune(event);
             case "boop" -> boop(event);
             case "play" -> startPlaying(event);
+            case "skip" -> skipSong(event);
             case "leave" -> leaveVoice(event);
             default -> {
                 // the registered command isn't handled in code
@@ -126,7 +131,16 @@ public class DroneBotEventListener extends ListenerAdapter {
     }
 
     private void startPlaying(SlashCommandInteractionEvent event) {
-        if (event.getGuild() == null) event.reply("You can only do this in a server.").queue();
+        if (event.getGuild() == null) {
+            event.reply("You can only do this in a server.").queue();
+            return;
+        }
+
+        //noinspection DataFlowIssue already checked if we're in a guild
+        if (!event.getMember().getVoiceState().inAudioChannel()) {
+            event.reply("You need to be in a voice channel first.").queue();
+            return;
+        }
 
         //event.deferReply(true).queue();
         String guildId = event.getGuild().getId();
@@ -134,30 +148,32 @@ public class DroneBotEventListener extends ListenerAdapter {
         if (!guildPlayers.containsKey(guildId)) {
 
             AudioManager guildAudioManager = event.getGuild().getAudioManager();
-            guildAudioManager.openAudioConnection(event.getGuild().getVoiceChannelById("927561153213767765")); // TODO what channel?
+            guildAudioManager.openAudioConnection(event.getMember().getVoiceState().getChannel());
 
             guildPlayers.put(guildId, playerManager.createPlayer());
 
+            // we don't need to keep track of this object as we don't need it again
             AudioPlayerSendHandler guildAudioPlayerSendHandler = new AudioPlayerSendHandler(guildPlayers.get(guildId));
-            // we don't need to keep track of this object
             guildAudioManager.setSendingHandler(guildAudioPlayerSendHandler);
 
-            TrackScheduler trackScheduler = new TrackScheduler();
-            guildPlayers.get(guildId).addListener(trackScheduler);
+            guildQueues.put(guildId, new TrackScheduler());
+            guildPlayers.get(guildId).addListener(guildQueues.get(guildId));
         }
 
         playerManager.loadItem(event.getOption("id", OptionMapping::getAsString), new AudioLoadResultHandler() {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
-                event.reply("Playing " + track.getInfo() + "...").queue();
+                System.out.println("Playing " + track.getInfo() + "...");
+                guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
                 guildPlayers.get(guildId).playTrack(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 for (AudioTrack track : playlist.getTracks()) {
-                    guildPlayers.get(guildId).playTrack(track);
+                    System.out.println("Queuing track...");
+                    guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
                 }
             }
 
@@ -171,7 +187,18 @@ public class DroneBotEventListener extends ListenerAdapter {
                 System.out.println("Error in loading: " + throwable.getMessage());
             }
         });
+        System.out.println("Done loading.");
+    }
 
+    private void skipSong(SlashCommandInteractionEvent event) {
+        if (event.getGuild() == null) {
+            event.reply("You can only do this in a server.").queue();
+            return;
+        }
+
+        if (!guildPlayers.containsKey(event.getGuild().getId())) {
+            guildQueues.get(event.getGuild().getId()).skip(guildPlayers.get(event.getGuild().getId()));
+        }
     }
 
     private void leaveVoice(SlashCommandInteractionEvent event) {
@@ -180,6 +207,8 @@ public class DroneBotEventListener extends ListenerAdapter {
         //noinspection DataFlowIssue  CacheFlag.VOICE_STATE should be enabled.
         if (event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
             event.getGuild().getAudioManager().closeAudioConnection();
+            event.reply("Left voice channel.").queue();
+            guildQueues.remove(event.getGuild().getId());
         }
     }
 }
