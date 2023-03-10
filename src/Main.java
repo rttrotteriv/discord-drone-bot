@@ -18,7 +18,7 @@ public class Main extends ListenerAdapter {
 
         try {
             jda = JDABuilder.create(args[args.length - 1],
-                            EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_VOICE_STATES))
+                            EnumSet.of(GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES))
                     .addEventListeners(new DroneBotEventListener())
                     .build();
         } catch (ErrorResponseException | LoginException exception) {
