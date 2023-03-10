@@ -21,7 +21,7 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (!queue.isEmpty() && !endReason.equals(AudioTrackEndReason.REPLACED)) {
+        if (!queue.isEmpty() && endReason.equals(AudioTrackEndReason.FINISHED)) {
             player.playTrack(queue.remove(0));
         } else {
             notPlaying = true;
