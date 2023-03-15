@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'org.hidetake.ssh' version '2.11.2'
 }
 
 java {
@@ -40,4 +41,31 @@ application {
 
 test {
     useJUnitPlatform()
+}
+
+remotes {
+    horizon {
+        host = '10.0.0.10'
+        user = 'cheesetron'
+        identity = file('/Users/rttrotter/.ssh/id_rsa')
+    }
+}
+
+tasks.register('deploy') {
+    dependsOn 'distZip'
+    doLast {
+        ssh.run {
+            session(remotes.horizon) {
+                // ew
+                zipTree('/Users/rttrotter/Documents/Java Projects/dronebot/build/distributions/dronebot-' + version + '.zip').forEach
+                        // make sure bin and lib exist otherwise everything goes to heck
+                        {if (it.parent.endsWith("/bin")) {
+                            put from: it, into: '/opt/com.cheesetron/discorddronebot/bin'
+                        } else {
+                            put from: it, into: '/opt/com.cheesetron/discorddronebot/lib'
+                        }}
+                execute 'sudo systemctl restart com.cheesetron.dronebot.service'
+            }
+        }
+    }
 }
