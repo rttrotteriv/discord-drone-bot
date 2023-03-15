@@ -12,9 +12,9 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="16e3026d-bf49-45b6-8383-92d6216c9949" />
-      <option name="name" value="16e3026d-bf49-45b6-8383-92d6216c9949" />
-      <option name="url" value="https://m2.dv8tion.net/releases" />
+      <option name="id" value="MavenRepo" />
+      <option name="name" value="MavenRepo" />
+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
     </remote-repository>
   </component>
 </project>

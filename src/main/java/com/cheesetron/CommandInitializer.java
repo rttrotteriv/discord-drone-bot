@@ -1,3 +1,5 @@
+package com.cheesetron;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;

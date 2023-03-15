@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/exampleStandalone/exampleStandalone.iml" filepath="$PROJECT_DIR$/exampleStandalone/exampleStandalone.iml" />
-      <module fileurl="file://$PROJECT_DIR$/javadiscordbot.iml" filepath="$PROJECT_DIR$/javadiscordbot.iml" />
-    </modules>
-  </component>
-</project>

@@ -1,10 +1,15 @@
+package com.cheesetron;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.util.EnumSet;
@@ -12,8 +17,15 @@ import java.util.EnumSet;
 /**
  * Starts the drone bot and initializes commands.
  */
-public class Main extends ListenerAdapter {
+public class Core extends ListenerAdapter {
+    private static final Logger logger = LogManager.getLogger("com.cheesetron.dronebot");
+
     public static void main(String[] args) {
+        if (args.length < 1) {
+            logger.log(Level.FATAL, "No API token provided.");
+            System.exit(1);
+        }
+
         JDA jda = null;
 
         try {
@@ -36,11 +48,9 @@ public class Main extends ListenerAdapter {
         if (java.util.Arrays.asList(args).contains("-initialize")) CommandInitializer.initializeSlashCommands(jda);
 
         // Log connected guilds
-        System.out.print("In guilds:");
-        for (Guild guild : jda.getGuilds()) {
-            System.out.print(" | " + guild.getName());
+        if (logger.isInfoEnabled()) {
+            logger.info("In guilds: " + jda.getGuilds());
         }
-        System.out.println();
     }
 }
 

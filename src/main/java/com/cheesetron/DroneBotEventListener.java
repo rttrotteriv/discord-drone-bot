@@ -1,3 +1,5 @@
+package com.cheesetron;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -151,10 +153,11 @@ public class DroneBotEventListener extends ListenerAdapter {
         //event.deferReply(true).queue();
         String guildId = event.getGuild().getId();
 
+        AudioManager guildAudioManager = event.getGuild().getAudioManager();
+        guildAudioManager.openAudioConnection(event.getMember().getVoiceState().getChannel());
+
         if (!guildPlayers.containsKey(guildId) || !guildQueues.containsKey(guildId)) {
 
-            AudioManager guildAudioManager = event.getGuild().getAudioManager();
-            guildAudioManager.openAudioConnection(event.getMember().getVoiceState().getChannel());
 
             guildPlayers.put(guildId, playerManager.createPlayer());
 
