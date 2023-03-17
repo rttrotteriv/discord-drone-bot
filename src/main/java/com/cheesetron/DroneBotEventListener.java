@@ -248,8 +248,11 @@ public class DroneBotEventListener extends ListenerAdapter {
         //noinspection DataFlowIssue  CacheFlag.VOICE_STATE should be enabled.
         if (event.getGuild().getSelfMember().getVoiceState().inAudioChannel()) {
             event.getGuild().getAudioManager().closeAudioConnection();
-            event.reply("Left voice channel.").queue();
+            event.reply("Left voice channel.").setEphemeral(true).queue();
             guildQueues.get(event.getGuild().getId()).clearQueue();
+            guildQueues.get(event.getGuild().getId()).repeat = false;
+        } else {
+            event.reply("Not in a voice channel.").setEphemeral(true).queue();
         }
     }
 }
