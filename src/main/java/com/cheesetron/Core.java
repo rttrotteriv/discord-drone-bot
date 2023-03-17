@@ -49,7 +49,11 @@ public class Core extends ListenerAdapter {
 
         // Log connected guilds
         if (logger.isInfoEnabled()) {
-            logger.info("In guilds: " + jda.getGuilds());
+            StringBuilder guildList = new StringBuilder();
+            for (Guild guild : jda.getGuilds()) {
+                guildList.append(" ").append(guild.getName());
+            }
+            logger.info("In guilds:" + guildList);
         }
     }
 }

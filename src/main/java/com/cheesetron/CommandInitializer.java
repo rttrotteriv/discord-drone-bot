@@ -3,6 +3,8 @@ package com.cheesetron;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
 
@@ -10,6 +12,8 @@ import static net.dv8tion.jda.api.interactions.commands.OptionType.*;
  * Class with one method to initialize slash commands for a given JDA.
  */
 public class CommandInitializer {
+    private static final Logger logger = LogManager.getLogger("com.cheesetron.dronebot");
+
     public static void initializeSlashCommands(JDA jda) {
         CommandListUpdateAction commands = jda.updateCommands();
 
@@ -46,6 +50,6 @@ public class CommandInitializer {
                 // Send updated list to discord
                 .queue();
 
-        System.out.println("Commands initialized");  // TODO implement actual logging
+        logger.info("Commands initialized");
     }
 }

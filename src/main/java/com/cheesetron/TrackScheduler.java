@@ -5,6 +5,9 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 
 /**
@@ -12,8 +15,9 @@ import java.util.ArrayList;
  */
 public class TrackScheduler extends AudioEventAdapter {
 
-    ArrayList<AudioTrack> queue = new ArrayList<>();
+    private static final Logger audioLogger = LogManager.getLogger("com.cheesetron.dronebot.audio");
 
+    ArrayList<AudioTrack> queue = new ArrayList<>();
     boolean notPlaying = true;
 
     /**
@@ -23,17 +27,20 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (!queue.isEmpty() && endReason.equals(AudioTrackEndReason.FINISHED)) {
+        audioLogger.debug("Track ended");
+        if (repeat) {
+            player.playTrack(track.makeClone());
+        } else if (!queue.isEmpty() && endReason.equals(AudioTrackEndReason.FINISHED)) {
             player.playTrack(queue.remove(0));
         } else {
             notPlaying = true;
         }
     }
 
-
     public void queue(AudioPlayer player, AudioTrack track) {
         if (queue.isEmpty() && notPlaying) {
             player.playTrack(track);
+            audioLogger.debug(track.getInfo().uri);
             notPlaying = false;
         } else {
             queue.add(track);

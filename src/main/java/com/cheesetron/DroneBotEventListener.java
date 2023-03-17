@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -26,6 +28,9 @@ import java.util.Map;
  * Class that listens to and responds to slash commands and buttons.
  */
 public class DroneBotEventListener extends ListenerAdapter {
+
+    private static final Logger logger = LogManager.getLogger("com.cheesetron.dronebot");
+    private static final Logger audioLogger = LogManager.getLogger("com.cheesetron.dronebot.audio");
 
     AudioPlayerManager playerManager;
 
@@ -41,7 +46,7 @@ public class DroneBotEventListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        System.out.println("Command received: " + event.getName());
+        logger.debug("Command received: " + event.getName());
 
         switch (event.getName()) {
             case "say" ->
@@ -58,7 +63,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             default -> {
                 // the registered command isn't handled in code
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
-                System.err.println("Command didn't work");
+                logger.error("Couldn't handle slash command, check if command list updated");
             }
         }
     }
@@ -92,7 +97,7 @@ public class DroneBotEventListener extends ListenerAdapter {
         switch (event.getName()) {
             default -> {
                 event.reply("Something went wrong with that command :c").setEphemeral(true).queue();
-                System.err.println("Command didn't work");
+                logger.error("Failure in user context interaction " + event.getName());
             }
         }
     }
@@ -127,7 +132,6 @@ public class DroneBotEventListener extends ListenerAdapter {
                 .queue();
     }
     */
-
     private void boop(SlashCommandInteractionEvent event) {
         if (event.getOption("furry", false, OptionMapping::getAsBoolean)) {
             event.reply("You receive a light tap on the nose. The fuzzy paw makes it even better.").setEphemeral(true).queue();
@@ -136,6 +140,8 @@ public class DroneBotEventListener extends ListenerAdapter {
         }
 
         event.getChannel().sendMessage(event.getUser().getAsMention() + ", boop!").queue();
+
+        logger.always().log("Boopage has occurred.");
     }
 
     private void startPlaying(SlashCommandInteractionEvent event) {
@@ -192,10 +198,10 @@ public class DroneBotEventListener extends ListenerAdapter {
 
             @Override
             public void loadFailed(FriendlyException throwable) {
-                System.out.println("Error in loading: " + throwable.getMessage());
+                audioLogger.error("Error in loading: " + throwable.getMessage());
             }
         });
-        System.out.println("Done loading.");
+        audioLogger.debug("Loaded track.");
     }
 
     private void skipSong(SlashCommandInteractionEvent event) {
