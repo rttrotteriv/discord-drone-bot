@@ -39,6 +39,10 @@ public class CommandInitializer {
                                 .setGuildOnly(true)
 
                 ).addCommands(
+                        Commands.slash("repeat", "Toggle repeating this song indefinitely")
+                                .setGuildOnly(true)
+
+                ).addCommands(
                         Commands.slash("leave", "Removes the bot from the voice channel")
                                 .setGuildOnly(true)
 

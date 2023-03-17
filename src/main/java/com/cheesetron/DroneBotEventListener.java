@@ -59,6 +59,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             case "boop" -> boop(event);
             case "play" -> startPlaying(event);
             case "skip" -> skipSong(event);
+            case "repeat" -> toggleRepeat(event);
             case "leave" -> leaveVoice(event);
             default -> {
                 // the registered command isn't handled in code
@@ -187,7 +188,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             public void playlistLoaded(AudioPlaylist playlist) {
                 event.reply("Queuing " + playlist.getName() + "...").queue();
                 for (AudioTrack track : playlist.getTracks()) {
-                    guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
+                    guildQueue.queue(guildPlayers.get(guildId), track);
                 }
             }
 
@@ -212,6 +213,30 @@ public class DroneBotEventListener extends ListenerAdapter {
 
         if (guildPlayers.containsKey(event.getGuild().getId()) && guildQueues.get(event.getGuild().getId()).skip(guildPlayers.get(event.getGuild().getId()))) {
             event.reply("Skipped.").queue();
+        } else {
+            event.reply("No songs queued.").queue();
+        }
+    }
+
+    private void toggleRepeat(SlashCommandInteractionEvent event) {
+        if (event.getGuild() == null) {
+            event.reply("You can only do this in a server.").queue();
+            return;
+        }
+
+        String guildID = event.getGuild().getId();
+
+        TrackScheduler guildQueue = guildQueues.get(guildID);
+
+        if (guildPlayers.containsKey(guildID)) {
+            if (!guildQueue.repeat) {
+                event.reply("Repeat is on.").setEphemeral(true).queue();
+                guildQueue.repeat = true;
+            }
+            else {
+                event.reply("Repeat is off.").setEphemeral(true).queue();
+                guildQueue.repeat = false;
+            }
         } else {
             event.reply("No songs queued.").queue();
         }

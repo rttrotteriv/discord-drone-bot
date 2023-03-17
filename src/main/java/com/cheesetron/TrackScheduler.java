@@ -19,6 +19,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     ArrayList<AudioTrack> queue = new ArrayList<>();
     boolean notPlaying = true;
+    boolean repeat = false;
 
     /**
      * @param player    Audio player
