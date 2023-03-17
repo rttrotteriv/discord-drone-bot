@@ -176,12 +176,16 @@ public class DroneBotEventListener extends ListenerAdapter {
             guildPlayers.get(guildId).addListener(guildQueues.get(guildId));
         }
 
+        TrackScheduler guildQueue = guildQueues.get(guildId);
+
         playerManager.loadItem(event.getOption("url", OptionMapping::getAsString), new AudioLoadResultHandler() {
             // This is an anonymous class.
             @Override
             public void trackLoaded(AudioTrack track) {
-                event.reply("Playing " + track.getInfo().title + "...").queue();
-                guildQueues.get(guildId).queue(guildPlayers.get(guildId), track);
+                audioLogger.debug(guildQueue.queue);
+                if (guildQueue.queue.isEmpty()) event.reply("Playing " + track.getInfo().title + "...").queue();
+                else event.reply("Playing " + track.getInfo().title + " next...").queue();
+                guildQueue.queue(guildPlayers.get(guildId), track);
             }
 
             @Override
