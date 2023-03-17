@@ -23,8 +23,8 @@ public class Core extends ListenerAdapter {
     private static final Logger logger = LogManager.getLogger("com.cheesetron.dronebot");
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            logger.log(Level.FATAL, "No API token provided.");
+        if (args.length < 2) {
+            logger.fatal( "No API token provided or no status. Command to run should be ./bin/core [-initialize] status token");
             System.exit(1);
         }
 
@@ -37,7 +37,7 @@ public class Core extends ListenerAdapter {
                     .addEventListeners(new DroneBotEventListener())
                     .build();
         } catch (ErrorResponseException | LoginException exception) {
-            System.err.println("Problem connecting to Discord. " + exception.getMessage());
+            logger.fatal("Problem connecting to Discord. " + exception.getMessage());
             System.exit(1);
         }
 
@@ -45,7 +45,7 @@ public class Core extends ListenerAdapter {
             System.err.println("awaitReady was interrupted, JDA caches may be incomplete!");
         }
 
-        jda.getPresence().setActivity(Activity.playing("it works!"));
+        jda.getPresence().setActivity(Activity.playing(args[args.length - 2]));
 
         // Initialize commands if told to
         if (java.util.Arrays.asList(args).contains("-initialize")) CommandInitializer.initializeSlashCommands(jda);
