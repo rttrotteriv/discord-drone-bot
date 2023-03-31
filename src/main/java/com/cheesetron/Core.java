@@ -53,7 +53,7 @@ public class Core extends ListenerAdapter {
         if (logger.isInfoEnabled()) {
             StringBuilder guildList = new StringBuilder();
             for (Guild guild : jda.getGuilds()) {
-                guildList.append(" ").append(guild.getName());
+                guildList.append(" | ").append(guild.getName());
             }
             logger.info("In guilds:" + guildList);
         }
