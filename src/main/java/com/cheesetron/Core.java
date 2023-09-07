@@ -23,7 +23,7 @@ public class Core extends ListenerAdapter {
 
     public static void main(String[] args) {
         if (args.length < 2) {
-            logger.fatal( "No API token provided or no status. Command to run should be ./bin/core [-initialize] status token");
+            logger.fatal("No API token provided or no status. Command to run should be ./bin/core [-initialize] status token");
             System.exit(1);
         }
 
@@ -35,13 +35,13 @@ public class Core extends ListenerAdapter {
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOJI, CacheFlag.STICKER, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
                     .addEventListeners(new DroneBotEventListener())
                     .build();
-        } catch (ErrorResponseException | LoginException exception) {
+        } catch (ErrorResponseException /* |  LoginException */ exception) {
             logger.fatal("Problem connecting to Discord. " + exception.getMessage());
             System.exit(1);
         }
 
         try { jda.awaitReady(); } catch (InterruptedException e) {
-            System.err.println("awaitReady was interrupted, JDA caches may be incomplete!");
+            logger.warn("awaitReady was interrupted, JDA caches may be incomplete!");
         }
 
         jda.getPresence().setActivity(Activity.playing(args[args.length - 2]));
