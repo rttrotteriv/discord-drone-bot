@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
@@ -29,6 +30,8 @@ import java.util.Map;
  */
 public class DroneBotEventListener extends ListenerAdapter {
 
+    private final String ownerID;
+
     private static final Logger logger = LogManager.getLogger("com.cheesetron.dronebot");
     private static final Logger audioLogger = LogManager.getLogger("com.cheesetron.dronebot.audio");
 
@@ -39,7 +42,8 @@ public class DroneBotEventListener extends ListenerAdapter {
     Map<String, TrackScheduler> guildQueues = new HashMap<>();
 
 
-    DroneBotEventListener() {
+    DroneBotEventListener(String ownerID) {
+        this.ownerID = ownerID;
         playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
@@ -52,7 +56,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             case "say" ->
                 // content is required so no null-check here
                 //noinspection DataFlowIssue
-                    say(event, event.getOption("content").getAsString());
+                    say(event, event.getOption("message").getAsString());
             /*
             case "prune" -> prune(event);
             */
@@ -110,11 +114,19 @@ public class DroneBotEventListener extends ListenerAdapter {
         }
     }
 
-    public void say(SlashCommandInteractionEvent event, String content) {
-        if (event.getUser().getId().equals("")) {
-            event.reply(content).queue();
+    public void say(SlashCommandInteractionEvent event, String message) {
+        User owner = event.getJDA().getUserById(this.ownerID);
+        if (owner == null) {
+            event.reply("I have no idea who my owner is. Sorry :c").setEphemeral(true).queue();
+            logger.error("Owner user with ID " + this.ownerID + " not found, please check command line arguments.");
+            return;
+        }
+
+        if (event.getUser().getId().equals(this.ownerID)) {
+            event.getChannel().sendMessage(message).queue();
+            event.reply("Sent message.").setEphemeral(true).queue();
         } else {
-            event.reply("Only Cheesetron's allowed to do that \uD83D\uDE1C").setEphemeral(true).queue();
+            event.reply("Only " + owner.getName() + "'s allowed to do that.").setEphemeral(true).queue();
         }
     }
 
