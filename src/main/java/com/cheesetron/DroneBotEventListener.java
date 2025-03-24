@@ -115,7 +115,7 @@ public class DroneBotEventListener extends ListenerAdapter {
     }
 
     public void say(SlashCommandInteractionEvent event, String message) {
-        User owner = event.getJDA().getUserById(this.ownerID);
+        User owner = event.getJDA().retrieveUserById(this.ownerID).complete();
         if (owner == null) {
             event.reply("I have no idea who my owner is. Sorry :c").setEphemeral(true).queue();
             logger.error("Owner user with ID " + this.ownerID + " not found, please check command line arguments.");
