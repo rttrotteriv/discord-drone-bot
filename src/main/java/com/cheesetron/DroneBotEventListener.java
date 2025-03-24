@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -118,13 +119,17 @@ public class DroneBotEventListener extends ListenerAdapter {
         User owner = event.getJDA().retrieveUserById(this.ownerID).complete();
         if (owner == null) {
             event.reply("I have no idea who my owner is. Sorry :c").setEphemeral(true).queue();
-            logger.error("Owner user with ID " + this.ownerID + " not found, please check command line arguments.");
+            logger.error("Owner user with ID {} not found, please check command line arguments.", this.ownerID);
             return;
         }
 
         if (event.getUser().getId().equals(this.ownerID)) {
-            event.getChannel().sendMessage(message).queue();
-            event.reply("Sent message.").setEphemeral(true).queue();
+            try {
+                event.getChannel().sendMessage(message).queue();
+            } catch (InsufficientPermissionException ignored) {
+                event.reply("I can't speak in this channel.").setEphemeral(true).queue();
+            }
+//            event.reply("Sent message.").setEphemeral(true).queue();
         } else {
             event.reply("Only " + owner.getName() + "'s allowed to do that.").setEphemeral(true).queue();
         }
@@ -154,7 +159,11 @@ public class DroneBotEventListener extends ListenerAdapter {
 
         event.getChannel().sendMessage(event.getUser().getAsMention() + ", boop!").queue();
 
-        logger.always().log("Boopage has occurred.");
+        if (event.getGuild() != null) {
+            logger.always().log("Boopage has occurred in {}.", event.getGuild().getName());
+        } else {
+            logger.always().log("Boopage has occurred.");
+        }
     }
 
     private void startPlaying(SlashCommandInteractionEvent event) {
