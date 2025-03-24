@@ -43,7 +43,7 @@ test {
 
 remotes {
     horizon {
-        host = '137.99.157.253'
+        host = '10.0.0.2'
         user = 'cheesetron'
         identity = file(System.properties['user.home'] + '/.ssh/id_rsa')
     }
@@ -64,7 +64,7 @@ tasks.register('deploy') {
                             }
                         }
                 execute 'echo ' + version + ' >> /opt/com.cheesetron/discorddronebot/version'
-                execute 'sudo systemctl restart com.cheesetron.dronebot.service'
+                execute 'sudo systemctl restart dronebot'
             }
         }
     }
