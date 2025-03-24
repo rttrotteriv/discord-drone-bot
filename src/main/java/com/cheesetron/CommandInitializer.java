@@ -1,6 +1,7 @@
 package com.cheesetron;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.apache.logging.log4j.LogManager;
@@ -20,35 +21,32 @@ public class CommandInitializer {
         commands.addCommands(
                         Commands.slash("say", "Makes the bot say what you tell it to")
                                 .addOption(STRING, "message", "What the bot should say", true)
+                                .setContexts(InteractionContextType.GUILD, InteractionContextType.PRIVATE_CHANNEL),
 
-                /*
-                ).addCommands(
+                        /*
                         Commands.slash("prune", "Prune messages from this channel")
                                 .addOption(INTEGER, "amount", "How many messages to prune (Default 100)") // simple optional argument
                                 .setGuildOnly(true)
-                                .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_MANAGE))
-                */
+                                .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MESSAGE_MANAGE)),
+                        */
 
-                ).addCommands(
                         Commands.slash("play", "Queue a youtube video or playlist audio")
                                 .addOption(STRING, "url", "Video or playlist URL", true)
-                                .setGuildOnly(true)
+                                .setContexts(InteractionContextType.GUILD),
 
-                ).addCommands(
                         Commands.slash("skip", "Skip to next song in queue")
-                                .setGuildOnly(true)
+                                .setContexts(InteractionContextType.GUILD),
 
-                ).addCommands(
                         Commands.slash("repeat", "Toggle repeating this song indefinitely")
-                                .setGuildOnly(true)
+                                .setContexts(InteractionContextType.GUILD),
 
-                ).addCommands(
                         Commands.slash("leave", "Removes the bot from the voice channel")
-                                .setGuildOnly(true)
+                                .setContexts(InteractionContextType.GUILD),
 
-                ).addCommands(
                         Commands.slash("boop", "Receive a boop")
                                 .addOption(BOOLEAN, "furry", "If paw-boops are your thing.")
+                                .setContexts(InteractionContextType.GUILD, InteractionContextType.PRIVATE_CHANNEL,
+                                             InteractionContextType.BOT_DM)
                 )
 
                 // Send updated list to discord
