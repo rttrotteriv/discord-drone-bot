@@ -129,7 +129,7 @@ public class DroneBotEventListener extends ListenerAdapter {
             } catch (InsufficientPermissionException ignored) {
                 event.reply("I can't speak in this channel.").setEphemeral(true).queue();
             }
-//            event.reply("Sent message.").setEphemeral(true).queue();
+            event.reply("Sent message.").setEphemeral(true).queue();
         } else {
             event.reply("Only " + owner.getName() + "'s allowed to do that.").setEphemeral(true).queue();
         }
