@@ -44,7 +44,7 @@ public class Core extends ListenerAdapter {
             logger.warn("awaitReady was interrupted, JDA caches may be incomplete!");
         }
 
-        jda.getPresence().setActivity(Activity.playing(args[args.length - 3]));
+        jda.getPresence().setActivity(Activity.customStatus(args[args.length - 3]));
 
         // Initialize commands if told to
         if (java.util.Arrays.asList(args).contains("-initialize")) CommandInitializer.initializeSlashCommands(jda);
